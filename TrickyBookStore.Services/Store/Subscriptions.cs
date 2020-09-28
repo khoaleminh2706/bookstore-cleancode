@@ -8,7 +8,7 @@ namespace TrickyBookStore.Services.Store
     {
         public static readonly IEnumerable<Subscription> Data = new List<Subscription>
         {
-            new Subscription { Id = 1, SubscriptionType = SubscriptionTypes.Paid, Priority = ...,
+            new Subscription { Id = 1, SubscriptionType = SubscriptionTypes.Paid, Priority = 2,
                 PriceDetails = new Dictionary<string, double>
                 {
                     { Constants.PriceDetailsType.FixedPrice, 50 },
@@ -16,7 +16,7 @@ namespace TrickyBookStore.Services.Store
                     { Constants.PriceDetailsType.DiscountThreshold, 3 },
                 }
             },
-            new Subscription { Id = 2, SubscriptionType = SubscriptionTypes.Free, Priority = ...,
+            new Subscription { Id = 2, SubscriptionType = SubscriptionTypes.Free, Priority = 4,
                 PriceDetails = new Dictionary<string, double>
                 {
                     { Constants.PriceDetailsType.FixedPrice, 0 },
@@ -32,14 +32,14 @@ namespace TrickyBookStore.Services.Store
                    { Constants.PriceDetailsType.DiscountThreshold, 3 },
                 }
             },
-            new Subscription { Id = 4, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = ...,
+            new Subscription { Id = 4, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 3,
                 PriceDetails = new Dictionary<string, double>
                 {
                   { Constants.PriceDetailsType.FixedPrice, 75 },
                   { Constants.PriceDetailsType.DiscountAmount, 3 },
                 }              
             },
-            new Subscription { Id = 5, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = ...,
+            new Subscription { Id = 5, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 3,
                 PriceDetails = new Dictionary<string, double>
                 {
                     { Constants.PriceDetailsType.FixedPrice, 75 },
@@ -48,7 +48,7 @@ namespace TrickyBookStore.Services.Store
                 },
                 BookCategoryId = 1
             },
-            new Subscription { Id = 6, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = ...,
+            new Subscription { Id = 6, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 3,
                 PriceDetails = new Dictionary<string, double>
                 {
                     { Constants.PriceDetailsType.FixedPrice, 75 },
