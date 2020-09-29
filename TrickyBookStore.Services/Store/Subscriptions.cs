@@ -40,7 +40,6 @@ namespace TrickyBookStore.Services.Store
                 {
                   { Constants.PriceDetailsType.FixedPrice, 75 },
                   { Constants.PriceDetailsType.DiscountOldBook, 1 },
-
                   { Constants.PriceDetailsType.DiscountNewBook, 0.15 },
                   { Constants.PriceDetailsType.DiscountNewBookThreshold, 3 },
                 }              
