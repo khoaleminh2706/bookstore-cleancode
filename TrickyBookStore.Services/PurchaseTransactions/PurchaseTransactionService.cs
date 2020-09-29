@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TrickyBookStore.Models;
 using TrickyBookStore.Services.Books;
 
@@ -16,7 +17,13 @@ namespace TrickyBookStore.Services.PurchaseTransactions
 
         public IList<PurchaseTransaction> GetPurchaseTransactions(long customerId, DateTimeOffset fromDate, DateTimeOffset toDate)
         {
-            throw new NotImplementedException();
+            var transactionList = Store.PurchaseTransactions.Data
+                .Where(purchaseTransaction =>
+                    purchaseTransaction.CustomerId == customerId
+                    && purchaseTransaction.CreatedDate >= fromDate
+                    && purchaseTransaction.CreatedDate <= toDate)
+                .ToList();
+            return transactionList;
         }
     }
 }

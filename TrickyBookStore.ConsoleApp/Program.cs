@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
+using System.Data.SqlTypes;
 using TrickyBookStore.Common;
-using TrickyBookStore.Models;
-using TrickyBookStore.Services.Customers;
+using TrickyBookStore.Services.Payment;
 
 namespace TrickyBookStore.ConsoleApp
 {
@@ -11,36 +10,30 @@ namespace TrickyBookStore.ConsoleApp
     {
         static void Main()
         {
+            var year = 2018;
+            var month = 1;
+
             var serviceProvider = new ServiceCollection()
                 .RegisterBookStoreServices()
                 .BuildServiceProvider();
 
-            var customerService = serviceProvider.GetService<ICustomerService>();
-            var customer = customerService.GetCustomerById(5);
+            var paymentService = serviceProvider.GetService<IPaymentService>();
+
+            var ngayDauThang = NgayDauThang(year, month);
+            var amount = paymentService.GetPaymentAmount(
+                5, 
+                new DateTimeOffset(ngayDauThang), 
+                new DateTimeOffset(ngayDauThang.AddMonths(1).AddDays(-1)));
 
             // Calculate subcription fixed price
-            PriceCalulator priceCalulator = new PriceCalulator(customer);
-            Console.WriteLine("Fixed Subcription Price: " + priceCalulator.CalculateFixedPrice().ToString());
+            Console.WriteLine("Fixed Subcription Price: " + amount);
 
             Console.ReadLine();
         }
-    }
 
-    class PriceCalulator
-    {
-        public double FixedPrice { get; private set; }
-        public Customer Customer { get; private set; }
-
-        public PriceCalulator(Customer customer)
+        static DateTime NgayDauThang(int nam, int thang)
         {
-            Customer = customer;
-            FixedPrice = 0;
-        }
-        
-        public double CalculateFixedPrice()
-        {
-            FixedPrice = Customer.Subscriptions.Sum(sub => sub.PriceDetails[Constants.PriceDetailsType.FixedPrice]);
-            return FixedPrice;
+            return new DateTime(nam, thang, 1);
         }
     }
 }
