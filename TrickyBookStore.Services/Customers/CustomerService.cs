@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TrickyBookStore.Models;
 using TrickyBookStore.Services.Subscriptions;
 
@@ -22,6 +23,10 @@ namespace TrickyBookStore.Services.Customers
             if (subscriptionList != null && subscriptionList.Count != 0)
             {
                 targetCustomer.Subscriptions = subscriptionList;
+            }
+            else
+            {
+                targetCustomer.Subscriptions = new List<Subscription>();
             }
 
             return targetCustomer;

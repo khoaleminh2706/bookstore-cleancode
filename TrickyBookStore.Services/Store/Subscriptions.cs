@@ -47,12 +47,22 @@ namespace TrickyBookStore.Services.Store
             },
             new Subscription { Id = 5, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 2,
                 PriceDetails = new Dictionary<string, double>
-                { { Constants.PriceDetailsType.FixedPrice, 75 }, { Constants.PriceDetailsType.DiscountOldBook, 1 }, { Constants.PriceDetailsType.DiscountNewBook, 0.15 }, { Constants.PriceDetailsType.DiscountNewBookThreshold, 3 }, },
+                { 
+                    { Constants.PriceDetailsType.FixedPrice, 75 }, 
+                    { Constants.PriceDetailsType.DiscountOldBook, 1 }, 
+                    { Constants.PriceDetailsType.DiscountNewBook, 0.15 }, 
+                    { Constants.PriceDetailsType.DiscountNewBookThreshold, 3 },
+                },
                 BookCategoryId = 1
             },
             new Subscription { Id = 6, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 2,
                 PriceDetails = new Dictionary<string, double>
-                { { Constants.PriceDetailsType.FixedPrice, 75 }, { Constants.PriceDetailsType.DiscountOldBook, 1 }, { Constants.PriceDetailsType.DiscountNewBook, 0.15 }, { Constants.PriceDetailsType.DiscountNewBookThreshold, 3 }, },
+                { 
+                    { Constants.PriceDetailsType.FixedPrice, 75 }, 
+                    { Constants.PriceDetailsType.DiscountOldBook, 1 }, 
+                    { Constants.PriceDetailsType.DiscountNewBook, 0.15 }, 
+                    { Constants.PriceDetailsType.DiscountNewBookThreshold, 3 }, 
+                },
                 BookCategoryId = 3
             }
         };

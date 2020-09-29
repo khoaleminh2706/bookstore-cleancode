@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using TrickyBookStore.Models;
-using TrickyBookStore.Services.Books;
 using TrickyBookStore.Services.Customers;
 using TrickyBookStore.Services.PurchaseTransactions;
 
@@ -25,7 +24,7 @@ namespace TrickyBookStore.Services.Payment
             DateTimeOffset toDate)
         {
             var targetCustomer = CustomerService.GetCustomerById(customerId);
-            var transactions = PurchaseTransactionService
+            var transactionList = PurchaseTransactionService
                 .GetPurchaseTransactions(customerId, fromDate, toDate);
 
             var fixedPrice = CalculateFixedPrice(targetCustomer);
@@ -34,8 +33,17 @@ namespace TrickyBookStore.Services.Payment
 
         private double CalculateFixedPrice(Customer customer)
         {
-            return customer.Subscriptions.Sum(sub => 
+            // tinsh cao nhất + thêm số category addtted accounts
+            var addictedCategoriesPrice = customer.Subscriptions
+                .Where(sub => sub.SubscriptionType == SubscriptionTypes.CategoryAddicted)
+                .Sum(sub => sub.PriceDetails[Constants.PriceDetailsType.FixedPrice]);
+
+            var priceFromOtherSubcriptions =  customer.Subscriptions
+                .Where(sub => sub.SubscriptionType != SubscriptionTypes.CategoryAddicted)
+                .Sum(sub => 
                 sub.PriceDetails[Constants.PriceDetailsType.FixedPrice]);
+
+            return addictedCategoriesPrice + priceFromOtherSubcriptions;
         }
     }
 }
