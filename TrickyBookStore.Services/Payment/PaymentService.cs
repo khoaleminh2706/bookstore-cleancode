@@ -19,10 +19,14 @@ namespace TrickyBookStore.Services.Payment
             PurchaseTransactionService = purchaseTransactionService;
         }
 
-        public double GetPaymentAmount(long customerId, DateTimeOffset fromDate, DateTimeOffset toDate)
+        public double GetPaymentAmount(
+            long customerId, 
+            DateTimeOffset fromDate, 
+            DateTimeOffset toDate)
         {
             var targetCustomer = CustomerService.GetCustomerById(customerId);
-            var transactions = PurchaseTransactionService.GetPurchaseTransactions(customerId, fromDate, toDate);
+            var transactions = PurchaseTransactionService
+                .GetPurchaseTransactions(customerId, fromDate, toDate);
 
             var fixedPrice = CalculateFixedPrice(targetCustomer);
             return fixedPrice;
