@@ -51,30 +51,34 @@ namespace TrickyBookStore.Services.Payment
         }
 
         private double ProcessTotalPrice(
-            List<Book> books, 
+            IList<Book> books, 
             IList<Subscription> subscriptions)
         {
             double totalPrice = 0;
 
+            var addictedCategories = subscriptions
+                .Where(sub => sub.SubscriptionType == SubscriptionTypes.CategoryAddicted)
+                .ToList();
+
             // get highest subcription
-            var notIncludeAdditedCategories = subscriptions
+            var highestSubTier = subscriptions
                 .Where(sub => sub.SubscriptionType != SubscriptionTypes.CategoryAddicted)
                 .ToList()[0];
 
             // calculate old books
             totalPrice += books.Where(book => book.IsOld == true)
-                .Sum(book => book.Price * (1  - notIncludeAdditedCategories.PriceDetails[Constants.PriceDetailsType.DiscountOldBook]));
+                .Sum(book => book.Price * (1  - highestSubTier.PriceDetails[Constants.PriceDetailsType.DiscountOldBook]));
 
             // calculate for new books
-            int threshold = Convert.ToInt32(notIncludeAdditedCategories.PriceDetails[Constants.PriceDetailsType.DiscountNewBookThreshold]);
+            int threshold = Convert.ToInt32(highestSubTier.PriceDetails[Constants.PriceDetailsType.DiscountNewBookThreshold]);
 
             var newBooks = books.Where(book => book.IsOld == false);
 
             totalPrice += newBooks
-                .Sum(book => book.Price * (1 - notIncludeAdditedCategories.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]));
+                .Sum(book => book.Price * (1 - highestSubTier.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]));
 
             totalPrice += newBooks
-                .Sum(book => book.Price * (1 - notIncludeAdditedCategories.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]));
+                .Sum(book => book.Price * (1 - highestSubTier.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]));
 
             return totalPrice;
         }
