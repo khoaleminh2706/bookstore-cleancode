@@ -12,7 +12,7 @@ namespace TrickyBookStore.Services.Payment
         ICustomerService CustomerService { get; }
         IPurchaseTransactionService PurchaseTransactionService { get; }
 
-        public PaymentService(ICustomerService customerService, 
+        public PaymentService(ICustomerService customerService,
             IPurchaseTransactionService purchaseTransactionService)
         {
             CustomerService = customerService;
@@ -20,8 +20,8 @@ namespace TrickyBookStore.Services.Payment
         }
 
         public double GetPaymentAmount(
-            long customerId, 
-            DateTimeOffset fromDate, 
+            long customerId,
+            DateTimeOffset fromDate,
             DateTimeOffset toDate)
         {
             var targetCustomer = CustomerService.GetCustomerById(customerId);
@@ -30,7 +30,15 @@ namespace TrickyBookStore.Services.Payment
 
             var fixedPrice = CalculateFixedPrice(targetCustomer);
 
-            var transactionsTotalPrice = ProcessTotalPrice(transactionList.Select(tran => tran.Book).ToList(), targetCustomer.Subscriptions);
+            double transactionsTotalPrice = 0;
+            if (transactionList.Count == 0)
+            {
+                transactionsTotalPrice = 0;
+            }
+            else
+            {
+                transactionsTotalPrice = ProcessTotalPrice(transactionList.Select(tran => tran.Book).ToList(), targetCustomer.Subscriptions);
+            }
 
             return fixedPrice + transactionsTotalPrice;
         }
@@ -42,19 +50,19 @@ namespace TrickyBookStore.Services.Payment
                 .Where(sub => sub.SubscriptionType == SubscriptionTypes.CategoryAddicted)
                 .Sum(sub => sub.PriceDetails[Constants.PriceDetailsType.FixedPrice]);
 
-            var priceFromOtherSubcriptions =  customer.Subscriptions
+            var priceFromOtherSubcriptions = customer.Subscriptions
                 .Where(sub => sub.SubscriptionType != SubscriptionTypes.CategoryAddicted)
-                .Sum(sub => 
+                .Sum(sub =>
                 sub.PriceDetails[Constants.PriceDetailsType.FixedPrice]);
 
             return addictedCategoriesPrice + priceFromOtherSubcriptions;
         }
 
         private double ProcessTotalPrice(
-            IList<Book> books, 
+            IList<Book> books,
             IList<Subscription> subscriptions)
         {
-            double totalPrice = 0;
+            double price = 0;
 
             var addictedCategories = subscriptions
                 .Where(sub => sub.SubscriptionType == SubscriptionTypes.CategoryAddicted)
@@ -63,24 +71,77 @@ namespace TrickyBookStore.Services.Payment
             // get highest subcription
             var highestSubTier = subscriptions
                 .Where(sub => sub.SubscriptionType != SubscriptionTypes.CategoryAddicted)
-                .ToList()[0];
+                .ToList().FirstOrDefault();
 
-            // calculate old books
-            totalPrice += books.Where(book => book.IsOld == true)
-                .Sum(book => book.Price * (1  - highestSubTier.PriceDetails[Constants.PriceDetailsType.DiscountOldBook]));
+            if (highestSubTier != null)
+            {
+                 if (highestSubTier.Priority > addictedCategories[0].Priority)
+                {
+                    price += StandardSubscriptionPricing(books, highestSubTier);
+                    price += AddictedCategoriesPricing(books, addictedCategories);
+                }
+                else
+                {
+                    
+                    price += StandardSubscriptionPricing(books, highestSubTier);
+                }
+            }
+            else
+            {
+                price += AddictedCategoriesPricing(books, addictedCategories);
+            }
 
-            // calculate for new books
-            int threshold = Convert.ToInt32(highestSubTier.PriceDetails[Constants.PriceDetailsType.DiscountNewBookThreshold]);
 
-            var newBooks = books.Where(book => book.IsOld == false);
+            return price;
+        }
 
-            totalPrice += newBooks
-                .Sum(book => book.Price * (1 - highestSubTier.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]));
+        public double StandardSubscriptionPricing(
+            IList<Book> books, 
+            Subscription subscription)
+        {
+            double price = 0;
+            var newBook = books.Where(book => book.IsOld == false).ToList();
+            int threshold = Convert.ToInt32(
+                subscription.PriceDetails[Constants.PriceDetailsType.DiscountNewBookThreshold]
+                );
+            double discountNewBook = subscription.PriceDetails[Constants.PriceDetailsType.DiscountNewBook];
 
-            totalPrice += newBooks
-                .Sum(book => book.Price * (1 - highestSubTier.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]));
+            price += newBook.Take(threshold)
+                .Sum(book => book.Price * (1 - discountNewBook));
 
-            return totalPrice;
+            price += newBook.Skip(threshold)
+                .Sum(book => book.Price * (1 - discountNewBook));
+
+            return price;
+        }
+
+        public double AddictedCategoriesPricing(
+            IList<Book> books,
+            IList<Subscription> subscriptions)
+        {
+            double price = 0;
+
+            foreach(var subscription in subscriptions)
+            {
+                if (subscription.BookCategoryId == null)
+                {
+                    throw new Exception($"Subcription {subscription.Id} là loại Category Addicted nhưng không liên kết với category nào.");
+                }
+                int threshold = Convert.ToInt32(
+                    subscription.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]
+                    );
+                double discountNewBook = subscription.PriceDetails[Constants.PriceDetailsType.DiscountNewBook];
+
+                var categoryBooks = books.Where(book => book.IsOld == false && book.CategoryId == subscription.BookCategoryId)
+                    .ToList();
+
+                price += categoryBooks.Take(threshold)
+                    .Sum(book => book.Price * (1 - discountNewBook));
+                price += categoryBooks.Skip(threshold)
+                    .Sum(book => book.Price * (1 - discountNewBook));
+            }
+
+            return price;
         }
     }
 }

@@ -21,12 +21,12 @@ namespace TrickyBookStore.ConsoleApp
 
             var ngayDauThang = NgayDauThang(year, month);
             var amount = paymentService.GetPaymentAmount(
-                5, 
+                4, 
                 new DateTimeOffset(ngayDauThang), 
                 new DateTimeOffset(ngayDauThang.AddMonths(1).AddDays(-1)));
 
             // Calculate subcription fixed price
-            Console.WriteLine("Fixed Subcription Price: " + amount);
+            Console.WriteLine("Total Price: " + amount);
 
             Console.ReadLine();
         }
