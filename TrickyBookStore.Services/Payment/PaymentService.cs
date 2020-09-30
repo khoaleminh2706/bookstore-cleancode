@@ -45,17 +45,9 @@ namespace TrickyBookStore.Services.Payment
 
         private double CalculateFixedPrice(Customer customer)
         {
-            // tinsh cao nhất + thêm số category addtted accounts
-            var addictedCategoriesPrice = customer.Subscriptions
-                .Where(sub => sub.SubscriptionType == SubscriptionTypes.CategoryAddicted)
+            var totalPrice = customer.Subscriptions
                 .Sum(sub => sub.PriceDetails[Constants.PriceDetailsType.FixedPrice]);
-
-            var priceFromOtherSubcriptions = customer.Subscriptions
-                .Where(sub => sub.SubscriptionType != SubscriptionTypes.CategoryAddicted)
-                .Sum(sub =>
-                sub.PriceDetails[Constants.PriceDetailsType.FixedPrice]);
-
-            return addictedCategoriesPrice + priceFromOtherSubcriptions;
+            return totalPrice;
         }
 
         private double ProcessTotalPrice(
