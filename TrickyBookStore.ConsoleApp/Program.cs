@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Data.SqlTypes;
 using TrickyBookStore.Common;
 using TrickyBookStore.Services.Payment;
 
@@ -10,8 +9,13 @@ namespace TrickyBookStore.ConsoleApp
     {
         static void Main()
         {
-            var year = 2018;
-            var month = 1;
+            Console.WriteLine("Welcome...");
+            Console.Write("Please input year: ");
+            int.TryParse(Console.ReadLine(), out int year);
+            Console.Write("Please input month: ");
+            int.TryParse(Console.ReadLine(), out int month);
+            Console.Write("Please input customerId: ");
+            long.TryParse(Console.ReadLine(), out long customerId);
 
             var serviceProvider = new ServiceCollection()
                 .RegisterBookStoreServices()
@@ -19,21 +23,20 @@ namespace TrickyBookStore.ConsoleApp
 
             var paymentService = serviceProvider.GetService<IPaymentService>();
 
-            var ngayDauThang = NgayDauThang(year, month);
+            var firstDayOfMonth = FirstDayOfMonth(year, month);
             var amount = paymentService.GetPaymentAmount(
-                4, 
-                new DateTimeOffset(ngayDauThang), 
-                new DateTimeOffset(ngayDauThang.AddMonths(1).AddDays(-1)));
+                customerId, 
+                new DateTimeOffset(firstDayOfMonth), 
+                new DateTimeOffset(firstDayOfMonth.AddMonths(1).AddDays(-1)));
 
-            // Calculate subcription fixed price
             Console.WriteLine("Total Price: " + amount);
 
             Console.ReadLine();
         }
 
-        static DateTime NgayDauThang(int nam, int thang)
+        static DateTime FirstDayOfMonth(int year, int month)
         {
-            return new DateTime(nam, thang, 1);
+            return new DateTime(year, month, 1);
         }
     }
 }
