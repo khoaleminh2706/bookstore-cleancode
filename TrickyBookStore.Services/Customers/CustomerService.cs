@@ -26,7 +26,7 @@ namespace TrickyBookStore.Services.Customers
             }
             else
             {
-                targetCustomer.Subscriptions = new List<Subscription>();
+                throw new System.Exception($"Customer {id} does not have a subcription"); ;
             }
 
             return targetCustomer;
