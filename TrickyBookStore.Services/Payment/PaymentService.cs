@@ -72,7 +72,7 @@ namespace TrickyBookStore.Services.Payment
             var highestSubTier = subscriptions
                 .Where(sub => sub.SubscriptionType != SubscriptionTypes.CategoryAddicted)
                 .ToList().FirstOrDefault();
-
+            // tính category addicted trước hết
             if (highestSubTier != null)
             {
                  if (highestSubTier.Priority > addictedCategories[0].Priority)
@@ -82,7 +82,7 @@ namespace TrickyBookStore.Services.Payment
                 }
                 else
                 {
-                    
+                    price += AddictedCategoriesPricing(books, addictedCategories);
                     price += StandardSubscriptionPricing(books, highestSubTier);
                 }
             }
@@ -125,7 +125,7 @@ namespace TrickyBookStore.Services.Payment
             {
                 if (subscription.BookCategoryId == null)
                 {
-                    throw new Exception($"Subcription {subscription.Id} là loại Category Addicted nhưng không liên kết với category nào.");
+                    continue;
                 }
                 int threshold = Convert.ToInt32(
                     subscription.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]
