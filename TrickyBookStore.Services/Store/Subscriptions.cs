@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Cryptography;
 using TrickyBookStore.Models;
 
 namespace TrickyBookStore.Services.Store
@@ -8,11 +7,11 @@ namespace TrickyBookStore.Services.Store
     {
         public static readonly IEnumerable<Subscription> Data = new List<Subscription>
         {
-            new Subscription { Id = 1, SubscriptionType = SubscriptionTypes.Paid, Priority = 2,
+            new Subscription { Id = 1, SubscriptionType = SubscriptionTypes.Paid, Priority = 3,
                 PriceDetails = new Dictionary<string, double>
                 {
                     { Constants.PriceDetailsType.FixedPrice, 50 },
-                    { Constants.PriceDetailsType.DiscountOldBook, 0.05 },
+                    { Constants.PriceDetailsType.DiscountOldBook, 0.95 },
                     { Constants.PriceDetailsType.DiscountNewBook, 0.05 },
                     { Constants.PriceDetailsType.DiscountNewBookThreshold, 3 },
                 }
@@ -26,7 +25,7 @@ namespace TrickyBookStore.Services.Store
                     { Constants.PriceDetailsType.DiscountNewBookThreshold, 0 },
                 }
             },
-            new Subscription { Id = 3, SubscriptionType = SubscriptionTypes.Premium, Priority = 1,
+            new Subscription { Id = 3, SubscriptionType = SubscriptionTypes.Premium, Priority = 2,
                 PriceDetails = new Dictionary<string, double>
                 {
                    { Constants.PriceDetailsType.FixedPrice, 200 },
@@ -35,7 +34,7 @@ namespace TrickyBookStore.Services.Store
                    { Constants.PriceDetailsType.DiscountNewBookThreshold, 3 },
                 }
             },
-            new Subscription { Id = 4, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 2,
+            new Subscription { Id = 4, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 1,
                 PriceDetails = new Dictionary<string, double>
                 {
                   { Constants.PriceDetailsType.FixedPrice, 75 },
@@ -44,7 +43,7 @@ namespace TrickyBookStore.Services.Store
                   { Constants.PriceDetailsType.DiscountNewBookThreshold, 3 },
                 }              
             },
-            new Subscription { Id = 5, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 2,
+            new Subscription { Id = 5, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 1,
                 PriceDetails = new Dictionary<string, double>
                 { 
                     { Constants.PriceDetailsType.FixedPrice, 75 }, 
@@ -54,7 +53,7 @@ namespace TrickyBookStore.Services.Store
                 },
                 BookCategoryId = 1
             },
-            new Subscription { Id = 6, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 2,
+            new Subscription { Id = 6, SubscriptionType = SubscriptionTypes.CategoryAddicted, Priority = 1,
                 PriceDetails = new Dictionary<string, double>
                 { 
                     { Constants.PriceDetailsType.FixedPrice, 75 }, 
