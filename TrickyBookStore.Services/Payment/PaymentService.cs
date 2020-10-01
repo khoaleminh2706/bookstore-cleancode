@@ -142,7 +142,7 @@ namespace TrickyBookStore.Services.Payment
                     .ToList();
 
                 int threshold = Convert.ToInt32(
-                    subscription.PriceDetails[Constants.PriceDetailsType.DiscountNewBook]
+                    subscription.PriceDetails[Constants.PriceDetailsType.DiscountNewBookThreshold]
                     );
                 double discountNewBook = subscription.PriceDetails[Constants.PriceDetailsType.DiscountNewBook];
 
